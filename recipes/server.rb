@@ -17,6 +17,13 @@
 # limitations under the License.
 #
 
+# Customization: get passwords from encrypted data bag
+if mysql_passwords = Chef::EncryptedDataBagItem.load("mysql", "passwords")
+  node.default['mysql']['server_root_password'] = mysql_passwords['root']
+  node.default['mysql']['server_debian_password'] = mysql_passwords['debian']
+  node.default['mysql']['server_repl_password'] = mysql_passwords['repl']
+end
+
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 
 include_recipe "mysql::client"
